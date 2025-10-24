@@ -1,5 +1,20 @@
-# Vue 3 + Vite
+# 🎨 Portfolio Frontend (Vue 3 + Tailwind CSS)
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is the **frontend** of my personal portfolio website — built with **Vue 3**, styled using **Tailwind CSS v4**, and powered by a **Laravel API backend**.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+It dynamically fetches projects and other content from the backend API, making it easy to update or add new portfolio items without redeploying the frontend.
+
+> 💡 The backend API for this project can be found here:  
+> [Backend Repository → olivertjr17/portfolio-backend](https://github.com/olivertjr17/portfolio-backend)
+
+---
+
+## 🚀 Tech Stack
+
+- **Framework:** Vue 3 (Composition API)
+- **Styling:** Tailwind CSS v4
+- **HTTP Client:** Axios
+- **State Management:** Pinia
+- **Build Tool:** Vite
+
+---
