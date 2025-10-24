@@ -13,7 +13,18 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 🧠 Check backend environment and generate .env dynamically
+      # 🟢 Allow SSH temporarily for GitHub Actions
+      - name: Allow SSH temporarily for GitHub Actions
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.SECURITY_GROUP_ID }} \
+            --protocol tcp --port 22 --cidr 0.0.0.0/0
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ap-southeast-1
+
+      # 🧠 Get backend APP_ENV
       - name: Get backend APP_ENV
         id: backend_env
         uses: appleboy/ssh-action@v0.1.10
@@ -23,13 +34,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.BACKEND_PATH }}
-            source .env
-            echo "APP_ENV=$APP_ENV" > ~/backend_env.txt
-
-      - name: Retrieve backend APP_ENV from EC2
-        run: |
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@${{ secrets.HOST }}:~/backend_env.txt backend_env.txt
-          echo "APP_ENV=$(grep APP_ENV backend_env.txt | cut -d'=' -f2)" >> $GITHUB_ENV
+            if [ -f ".env" ]; then
+              grep APP_ENV .env | cut -d '=' -f2
+            else
+              echo "local"
+            fi
+      - name: Set backend APP_ENV for workflow
+        run: echo "APP_ENV=${{ steps.backend_env.outputs.stdout }}" >> $GITHUB_ENV
 
       # 🧩 Generate frontend .env based on backend APP_ENV
       - name: Create .env for build
@@ -46,17 +57,6 @@ jobs:
 
       - name: Build Vue project
         run: npm run build
-
-      # 🟢 Allow SSH temporarily for GitHub Actions
-      - name: Allow SSH temporarily for GitHub Actions
-        run: |
-          aws ec2 authorize-security-group-ingress \
-            --group-id ${{ secrets.SECURITY_GROUP_ID }} \
-            --protocol tcp --port 22 --cidr 0.0.0.0/0
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ap-southeast-1
 
       # 🚀 Deploy to EC2
       - name: Deploy to EC2
