@@ -24,32 +24,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ap-southeast-1
 
-      # 🧠 Get backend APP_ENV
-      - name: Get backend APP_ENV
-        id: backend_env
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ${{ secrets.BACKEND_PATH }}
-            if [ -f ".env" ]; then
-              grep APP_ENV .env | cut -d '=' -f2
-            else
-              echo "local"
-            fi
-      - name: Set backend APP_ENV for workflow
-        run: echo "APP_ENV=${{ steps.backend_env.outputs.stdout }}" >> $GITHUB_ENV
-
-      # 🧩 Generate frontend .env based on backend APP_ENV
-      - name: Create .env for build
+      # 🧩 Create .env for production
+      - name: Create .env for production
         run: |
-          if [ "$APP_ENV" = "production" ]; then
-            echo "VITE_API_URL=https://api.devert.xyz/" > .env
-          else
-            echo "VITE_API_URL=http://localhost:8000/" > .env
-          fi
+          echo "VITE_API_URL=https://api.devert.xyz/" > .env
           cat .env
 
       - name: Install dependencies
