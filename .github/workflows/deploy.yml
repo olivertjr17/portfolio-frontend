@@ -39,8 +39,28 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "dist/*"
           target: "${{ secrets.FRONTEND_PATH }}"
+          strip_components: 1
           overwrite: true
           rm: true
+
+      # 🧩 Recreate .htaccess file automatically
+      - name: Create .htaccess on EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cat <<'EOF' > ${{ secrets.FRONTEND_PATH }}/.htaccess
+            <IfModule mod_rewrite.c>
+              RewriteEngine On
+              RewriteBase /
+              RewriteCond %{REQUEST_FILENAME} !-f
+              RewriteCond %{REQUEST_FILENAME} !-d
+              RewriteRule . /index.html [L]
+            </IfModule>
+            EOF
+            sudo systemctl restart httpd
 
       # 🔒 Revoke SSH access after deployment
       - name: Revoke SSH after deployment
