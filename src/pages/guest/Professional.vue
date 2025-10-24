@@ -104,7 +104,7 @@ const experiences = [
     company: "1Rotary",
     period: "May 2024 – November 2024",
     responsibilities: [
-      "Led migration of the company’s system from legacy PHP to Laravel, improving scalability, maintainability, and performance.",
+      "Contributed to migrating the company’s system from legacy PHP to Laravel, enhancing scalability, maintainability, and performance.",
       "Managed and resolved support tickets by debugging Laravel-based modules and applying effective fixes to maintain system stability.",
       "Enhanced existing modules by optimizing code and adopting conventional Laravel best practices.",
     ],
