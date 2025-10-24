@@ -39,6 +39,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "dist/*"
           target: "${{ secrets.FRONTEND_PATH }}"
+          overwrite: true
+          rm: true
 
       # 🔒 Revoke SSH access after deployment
       - name: Revoke SSH after deployment
