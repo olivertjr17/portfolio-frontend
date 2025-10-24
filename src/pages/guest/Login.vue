@@ -124,7 +124,7 @@
 
       <!-- Footer -->
       <div class="text-center text-sm text-gray-500">
-        © {{ new Date().getFullYear() }} Your Portfolio Admin
+        © {{ new Date().getFullYear() }} My Portfolio - Olivert S.B. Jamito Jr.
       </div>
     </div>
   </div>
