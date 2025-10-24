@@ -8,7 +8,7 @@
             class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl"
           >
             Hi, I’m
-            <span class="text-indigo-600">Olivert S. B. Jamito Jr.</span>
+            <span class="text-indigo-600">Olivert S.B. Jamito Jr.</span>
           </h1>
           <p class="mt-6 text-lg leading-8 text-gray-600 max-w-2xl mx-auto">
             A full-stack developer passionate about building scalable,
