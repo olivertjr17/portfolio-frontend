@@ -13,6 +13,34 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # 🧠 Check backend environment and generate .env dynamically
+      - name: Get backend APP_ENV
+        id: backend_env
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.BACKEND_PATH }}
+            source .env
+            echo "APP_ENV=$APP_ENV" > ~/backend_env.txt
+
+      - name: Retrieve backend APP_ENV from EC2
+        run: |
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@${{ secrets.HOST }}:~/backend_env.txt backend_env.txt
+          echo "APP_ENV=$(grep APP_ENV backend_env.txt | cut -d'=' -f2)" >> $GITHUB_ENV
+
+      # 🧩 Generate frontend .env based on backend APP_ENV
+      - name: Create .env for build
+        run: |
+          if [ "$APP_ENV" = "production" ]; then
+            echo "VITE_API_URL=https://api.devert.xyz/" > .env
+          else
+            echo "VITE_API_URL=http://localhost:8000/" > .env
+          fi
+          cat .env
+
       - name: Install dependencies
         run: npm ci
 
@@ -28,7 +56,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ap-southeast-1 # adjust if different
+          AWS_DEFAULT_REGION: ap-southeast-1
 
       # 🚀 Deploy to EC2
       - name: Deploy to EC2
@@ -64,7 +92,7 @@ jobs:
 
       # 🔒 Revoke SSH access after deployment
       - name: Revoke SSH after deployment
-        if: always() # ensures it runs even if deploy fails
+        if: always()
         run: |
           aws ec2 revoke-security-group-ingress \
             --group-id ${{ secrets.SECURITY_GROUP_ID }} \
