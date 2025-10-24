@@ -47,6 +47,17 @@
           >
             System
           </button>
+          <button
+            @click="activeTab = 'password'"
+            :class="[
+              'pb-2 font-medium',
+              activeTab === 'password'
+                ? 'border-b-2 border-indigo-600 text-indigo-600'
+                : 'text-gray-500 hover:text-gray-700',
+            ]"
+          >
+            Password
+          </button>
         </div>
 
         <!-- Profile Tab -->
@@ -124,6 +135,51 @@
             </button>
           </div>
         </div>
+        <!-- Password Tab -->
+        <div v-if="activeTab === 'password'" class="space-y-6">
+          <h2 class="text-lg font-semibold text-gray-900">Change Password</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700"
+                >Current Password</label
+              >
+              <input
+                v-model="passwordForm.current_password"
+                type="password"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >New Password</label
+              >
+              <input
+                v-model="passwordForm.password"
+                type="password"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Confirm Password</label
+              >
+              <input
+                v-model="passwordForm.password_confirmation"
+                type="password"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              @click="updatePassword"
+              class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            >
+              Update Password
+            </button>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -198,6 +254,33 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue"
+import axiosClient from "../../axios"
+
+const passwordForm = ref({
+  current_password: "",
+  password: "",
+  password_confirmation: "",
+})
+
+const updatePassword = async () => {
+  try {
+    await axiosClient.post("/user/password", passwordForm.value)
+    alert("Password updated successfully!")
+    passwordForm.value = {
+      current_password: "",
+      password: "",
+      password_confirmation: "",
+    }
+  } catch (error) {
+    if (error.response?.status === 422) {
+      const errors = error.response.data.errors
+      const firstError = Object.values(errors)[0][0]
+      alert(`Error: ${firstError}`)
+    } else {
+      alert("An unexpected error occurred.")
+    }
+  }
+}
 
 const activeTab = ref("profile")
 const openModal = ref(false)
