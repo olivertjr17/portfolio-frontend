@@ -14,8 +14,8 @@
             A full-stack developer passionate about building scalable,
             meaningful digital solutions using
             <span class="font-semibold text-gray-900">
-              PHP, Laravel, Vue.js, Tailwind CSS, and Docker </span
-            >.
+              PHP, Laravel, Vue.js, Tailwind CSS, and Docker.</span
+            >
           </p>
           <div class="mt-10 flex items-center justify-center gap-x-6">
             <RouterLink
