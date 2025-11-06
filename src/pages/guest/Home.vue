@@ -46,7 +46,7 @@
         />
         <div>
           <h2 class="text-2xl font-semibold text-gray-900">
-            A Developer Who Builds With Purpose
+            A Developer Who Builds With Purpose.
           </h2>
           <p class="mt-3 text-gray-600 leading-7 max-w-2xl">
             I build practical and efficient web applications that solve real
