@@ -27,7 +27,7 @@
           <p class="text-gray-600 mt-2">
             I am doing Full-Stack Development. I enjoy crafting clean,
             efficient, and scalable web applications using modern tools like
-            Vue, Laravel, and Docker.
+            Vue, Laravel, and Docker
           </p>
           <p class="text-gray-600 mt-3">
             I’m passionate about solving real-world problems through code,
